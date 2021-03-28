@@ -105,8 +105,8 @@
     ```xml
     <configuration>
       <property>
-    		<name>fs.default.name</name>
-    		<value>hdfs://10.148.0.8:9000/</value>
+        <name>fs.default.name</name>
+        <value>hdfs://10.148.0.8:9000/</value>
       </property>
     </configuration>
     ```
@@ -169,17 +169,17 @@
     ```xml
     <configuration>
       <property>
-    		<name>dfs.replication</name>
-    		<value>3</value>
+        <name>dfs.replication</name>
+        <value>3</value>
       </property>
-    	<property>
-    		<name>dfs.namenode.name.dir</name>
+      <property>
+        <name>dfs.namenode.name.dir</name>
       	<value>file:///usr/local/hadoop/hdfs/data</value>
-    	</property>
-    	<property>
+      </property>
+      <property>
         <name>dfs.secondary.http.address</name>
         <value>34.101.169.177:50090</value>
-    	</property>
+      </property>
     </configuration>
     ```
 
