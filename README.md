@@ -46,6 +46,8 @@
 
    ```shell
    wget https://downloads.apache.org/hadoop/common/hadoop-3.1.4/hadoop-3.1.4.tar.gz
+   
+   tar xvzf hadoop-3.1.4.tar.gz
    ```
 
 8. Setup JAVA_HOME and other environments. (All nodes)
@@ -181,6 +183,170 @@
         <value>34.101.169.177:50090</value>
       </property>
     </configuration>
+    ```
+
+17. Config mapred-site.xml on master node. (Master node)
+
+    ```shell
+    vi ~/hadoop/hadoop-3.1.4/etc/hadoop/mapred-site.xml
+    ```
+
+    ```xml
+    <configuration>
+      <property>
+        <name>mapreduce.jobtracker.address</name>
+        <value>34.101.229.166:54311</value>
+      </property>
+      <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
+      </property>
+      <property>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+      </property>
+      <property>
+        <name>mapreduce.map.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+      </property>
+      <property>
+        <name>mapreduce.reduce.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
+      </property>
+      <property>
+        <name>mapreduce.map.memory.mb</name>
+        <value>8192</value>
+      </property>
+      <property>
+        <name>mapreduce.reduce.memory.mb</name>
+        <value>8192</value>
+      </property>
+    </configuration>
+    ```
+
+18. Config yarn-site.xml on master node. (Master node)
+
+    ```shell
+    vi ~/hadoop/hadoop-3.1.4/etc/hadoop/yarn-site.xml
+    ```
+
+    ```xml
+    <configuration>
+      <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+      </property>
+      <!-- Site specific YARN configuration properties -->
+    </configuration>
+    ```
+
+19. Config masters file on master node. (Master node)
+
+    ```shell
+    vi ~/hadoop/hadoop-3.1.4/etc/hadoop/masters
+    ```
+
+    ```
+    34.101.229.166
+    ```
+
+20. Config workers file on master node. (Master node)
+
+    ```
+    localhost
+    34.101.169.177
+    34.101.128.39
+    ```
+
+21. Config hdfs-site.xml file on worker nodes. (All slave nodes)
+
+    ```shell
+    vi ~/hadoop/hadoop-3.1.4/etc/hadoop/hdfs-site.xml
+    ```
+
+    ```xml
+    <configuration>
+      <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+      </property>
+      <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>34.101.229.166</value>
+      </property>
+    </configuration>
+    ```
+
+22. Config hots (All nodes)
+
+    ```shell
+    sudo vi /etc/hosts
+    ```
+
+    ```
+    127.0.0.1 localhost
+    34.101.229.166 hadoop-master
+    34.101.169.177 hadoop-worker-01
+    34.101.128.39 hadoop-worker-02
+    ```
+
+23. Start Hadoop (on master node)
+
+    ```shell
+    cd ~/hadoop/hadoop-3.1.4/
+    ```
+
+    ```shell
+    sudo ./bin/hdfs namenode -format
+    ```
+
+    ```shell
+    sudo ./sbin/start-all.sh
+    ```
+
+24. Test Hadoop
+
+    After you run
+
+    ```shell
+    jps
+    ```
+
+    On master node you should see like this
+
+    ```
+    10867 NodeManager
+    11411 Jps
+    10149 NameNode
+    10329 DataNode
+    10681 ResourceManager
+    ```
+
+    On slave node, you should see like this
+
+    ```
+    24086 NodeManager
+    23928 SecondaryNameNode
+    23741 DataNode
+    24461 Jps
+    ```
+
+    You can access to your master node ip and port 9870 to see the information
+
+    ```
+    http://34.101.229.166:9870/
     ```
 
     
