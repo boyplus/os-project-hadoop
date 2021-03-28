@@ -94,8 +94,8 @@
     ```xml
     <configuration>
       <property>
-    		<name>fs.default.name</name>
-    		<value>hdfs://0.0.0.0:9000/</value>
+        <name>fs.default.name</name>
+        <value>hdfs://0.0.0.0:9000/</value>
       </property>
     </configuration>
     ```
@@ -174,7 +174,7 @@
       </property>
       <property>
         <name>dfs.namenode.name.dir</name>
-      	<value>file:///usr/local/hadoop/hdfs/data</value>
+        <value>file:///usr/local/hadoop/hdfs/data</value>
       </property>
       <property>
         <name>dfs.secondary.http.address</name>
