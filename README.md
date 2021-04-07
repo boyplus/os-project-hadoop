@@ -6,9 +6,9 @@
 
 > Create three Virtual Machines (Ubuntu18.0.4) on Google Cloud
 
-- hadoop-master: 34.101.229.166
-- hadoop-worker1: 34.101.169.177
-- hadoop-worker2: 34.101.128.39
+- hadoop-master: 137.116.150.214
+- hadoop-worker1: 104.215.184.216
+- hadoop-worker2: 13.76.26.55
 
 ## Steps to set up hadoop
 
@@ -108,7 +108,7 @@
     <configuration>
       <property>
         <name>fs.default.name</name>
-        <value>hdfs://10.148.0.8:9000/</value>
+        <value>hdfs://137.116.150.214:9000/</value>
       </property>
     </configuration>
     ```
@@ -144,18 +144,18 @@
     Add the content to be like this. (Host and host name is IP of your VM)
 
     ```xml
-    Host 34.101.229.166
-        HostName 34.101.229.166
+    Host 137.116.150.214
+        HostName 137.116.150.214
         User hadoop
         IdentityFile ~/.ssh/id_rsa
     
-    Host 34.101.169.177
-        HostName 34.101.169.177
+    Host 104.215.184.216
+        HostName 104.215.184.216
         User hadoop
         IdentityFile ~/.ssh/id_rsa
     
-    Host 34.101.128.39
-        HostName 34.101.128.39
+    Host 13.76.26.55
+        HostName 13.76.26.55
         User hadoop
         IdentityFile ~/.ssh/id_rsa
     ```
@@ -180,7 +180,7 @@
       </property>
       <property>
         <name>dfs.secondary.http.address</name>
-        <value>34.101.169.177:50090</value>
+        <value>104.215.184.216:50090</value>
       </property>
     </configuration>
     ```
@@ -195,7 +195,7 @@
     <configuration>
       <property>
         <name>mapreduce.jobtracker.address</name>
-        <value>34.101.229.166:54311</value>
+        <value>137.116.150.214:54311</value>
       </property>
       <property>
         <name>mapreduce.framework.name</name>
@@ -217,17 +217,9 @@
         <name>mapreduce.reduce.env</name>
         <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
       </property>
-      <property>
-        <name>mapreduce.map.memory.mb</name>
-        <value>8192</value>
-      </property>
-      <property>
-        <name>mapreduce.reduce.memory.mb</name>
-        <value>8192</value>
-      </property>
     </configuration>
     ```
-
+    
 18. Config yarn-site.xml on master node. (Master node)
 
     ```shell
@@ -255,18 +247,22 @@
     ```
 
     ```
-    34.101.229.166
+    137.116.150.214
     ```
 
 20. Config workers file on master node. (Master node)
 
-    ```
-    localhost
-    34.101.169.177
-    34.101.128.39
+    ```shell
+    vi ~/hadoop/hadoop-3.1.4/etc/hadoop/workers
     ```
 
-21. Config hdfs-site.xml file on worker nodes. (All slave nodes)
+    ```
+    localhost
+    104.215.184.216
+    13.76.26.55
+    ```
+
+21. Config hdfs-site.xml file on worker nodes. (All slave nodes) (IP in value is IP of master node)
 
     ```shell
     vi ~/hadoop/hadoop-3.1.4/etc/hadoop/hdfs-site.xml
@@ -284,7 +280,7 @@
       </property>
       <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>34.101.229.166</value>
+        <value>137.116.150.214</value>
       </property>
     </configuration>
     ```
@@ -297,12 +293,38 @@
 
     ```
     127.0.0.1 localhost
-    34.101.229.166 hadoop-master
-    34.101.169.177 hadoop-worker-01
-    34.101.128.39 hadoop-worker-02
+    137.116.150.214 hadoop-master
+    104.215.184.216 hadoop-worker-01
+    13.76.26.55 hadoop-worker-02
     ```
 
-23. Start Hadoop (on master node)
+23. Setup alias and environment variable (All nodes)
+
+    ```shell
+    vi ~/.bashrc
+    ```
+
+    add this content on top of the file
+
+    ```shell
+    alias hadoop="~/hadoop/hadoop-3.1.4/bin/hadoop"
+    alias hadoop_start="~/hadoop/hadoop-3.1.4/sbin/start-all.sh"
+    alias hadoop_stop="~/hadoop/hadoop-3.1.4/sbin/stop-all.sh"
+    alias hadoop_clear="sudo ~/hadoop/hadoop-3.1.4/bin/hdfs namenode -format"
+    alias hadoop_logs="cd ~/hadoop/hadoop-3.1.4/logs"
+    alias hadoop_setting="cd ~/hadoop/hadoop-3.1.4/etc/hadoop"
+    export HADOOP_HOME="~/hadoop/hadoop-3.1.4"
+    ```
+
+    activate the .bashrc file
+
+    ```shell
+    source ~/.bashrc
+    ```
+
+24. Start Hadoop (on master node)
+
+    You can go to hadoop installation directory to start hadoop or use alias to start
 
     ```shell
     cd ~/hadoop/hadoop-3.1.4/
@@ -316,7 +338,19 @@
     sudo ./sbin/start-all.sh
     ```
 
-24. Test Hadoop
+    (Optional -> start hadoop by alias command)
+
+    (This command use to clear namnode, you only run this command only once or when you want to clear name node)
+
+    ```shell
+    hadoop_clear
+    ```
+
+    ```shell
+    hadoop_start
+    ```
+
+25. Test services of Hadoop
 
     After you run
 
@@ -334,7 +368,7 @@
     10681 ResourceManager
     ```
 
-    On slave node, you should see like this
+    On slave node, you should see like this (SecondayNameNode only run in node that you set it as a secondary name node)
 
     ```
     24086 NodeManager
@@ -343,10 +377,39 @@
     24461 Jps
     ```
 
-    You can access to your master node ip and port 9870 to see the information
+    You can access to your master node ip and port 9870 to see the information of cluster (in DataNodes page, you should see 3 data nodes running)
 
     ```
-    http://34.101.229.166:9870/
+    http://137.116.150.214:9870/
     ```
 
-    
+## Run simple mapreduce (Word Count Program)
+
+1. Install hadoop core
+
+   ```shell
+   wget https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-core/1.2.1/hadoop-core-1.2.1.jar
+   ```
+
+2. Create WordCount.java
+
+   ```shell
+   cd ~
+   vi WordCount.java
+   ```
+
+   copy content from this link into file
+
+   https://www.dropbox.com/s/yp9i7nwmgzr3nkx/WordCount.java?dl=0
+
+3. Create jar file from WordCount.java
+
+   ```shell
+   javac -classpath hadoop-core-1.2.1.jar -d mapR WordCount.java
+   jar -cvf map.jar -C mapR/ .
+   ```
+
+   c
+
+## TroubleShooting
+
