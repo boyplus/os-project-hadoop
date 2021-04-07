@@ -383,7 +383,61 @@
     http://137.116.150.214:9870/
     ```
 
+## Example of hdfs (Hadoop File System) command
+
+> All of these command execute in the mastre node (All of command similar to linux command)
+
+1. **Create directory** (mkdir)
+
+   ```
+   hadoop fs -mkdir input
+   hadoop fs -mkdir output
+   ```
+
+2. **list** all directory and files in hdfs. (You should see /input) (ls)
+
+   ```shell
+   hadoop fs -ls /
+   ```
+
+3. **Put file** from local to hdfs (You need to create file inside your vm first)
+
+   ```shell
+   cd ~
+   vi input_1
+   ```
+
+   You can put any text inside the file
+
+   ```
+   hello world boy hello boy test
+   ```
+
+   ```shell
+   hadoop fs -put input_1 /input
+   ```
+
+4. **See content of file** (cat)
+
+   ```shell
+   hadoop cat /input/input_1
+   ```
+
+5. **Remove directory** (rm)
+
+   ```shell
+   hadoop fs -rm /output
+   ```
+
+6. **Remove directory and all files inside directory** (rm -R)
+
+   ```shell
+   hadoop fs -rm -R /input
+   ```
+
 ## Run simple mapreduce (Word Count Program)
+
+> All of these command run in user directory (cd ~)
 
 1. Install hadoop core
 
@@ -394,7 +448,6 @@
 2. Create WordCount.java
 
    ```shell
-   cd ~
    vi WordCount.java
    ```
 
@@ -402,14 +455,54 @@
 
    https://www.dropbox.com/s/yp9i7nwmgzr3nkx/WordCount.java?dl=0
 
-3. Create jar file from WordCount.java
+3. Create input file and put it into hdfs
 
    ```shell
-   javac -classpath hadoop-core-1.2.1.jar -d mapR WordCount.java
-   jar -cvf map.jar -C mapR/ .
+   vi input_1
    ```
 
-   c
+   ```
+   hello world boy hello boy test
+   ```
+
+   ```shell
+   hadoop fs -mkdir /input
+   hadoop fs -put input_1 /input
+   ```
+
+4. Create jar file from WordCount.java
+
+   ```shell
+   mkdir mapR
+   javac -classpath hadoop-core-1.2.1.jar -d mapR WordCount.java
+   jar -cvf WordCount.jar -C mapR/ .
+   ```
+
+5. Run the jar file (all files in /input in hdfs will be the input of program)
+
+   ```shell
+   hadoop jar WordCount.jar WordCount /input /output
+   ```
+
+6. After the mapreduce job is finished, you can see the output in /output directory
+
+   ```shell
+   hadoop fs -ls /output
+   hadoop fs -cat /output/<file that you see from above command>
+   ```
+
+   The output is a mapping between word and count of that word
 
 ## TroubleShooting
 
+> If you start the hadoop but some service is missing, you can see the log of error
+
+This command will change directory to log directory
+
+```shell
+hadoop_logs
+```
+
+
+
+### Data Node is not starting
