@@ -488,7 +488,7 @@
 
    ```shell
    hadoop fs -ls /output
-   hadoop fs -cat /output/<file that you see from above command>
+   hadoop fs -cat /output/<file that you see from previous command>
    ```
 
    The output is a mapping between word and count of that word
@@ -497,12 +497,32 @@
 
 > If you start the hadoop but some service is missing, you can see the log of error
 
-This command will change directory to log directory
+This command will change directory to log directory (This directory contains log of all services)
 
 ```shell
 hadoop_logs
 ```
 
-
-
 ### Data Node is not starting
+
+1. Stop hadoop and format name node
+
+   ```shell
+   hadoop_stop
+   hadoop_clear
+   ```
+
+2. Delete dfs folder
+
+   ```shell
+   cd /tmp/hadoop-hadoop
+   rm -rf dfs
+   ```
+
+3. Start hadoop
+
+   ```shell
+   hadoop_start
+   ```
+
+> Now when 
