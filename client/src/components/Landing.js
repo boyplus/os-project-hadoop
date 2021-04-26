@@ -9,33 +9,43 @@ const Landing = (props) => {
   const [name, setName] = useState('');
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      let res = await axios.get("/api/test");
-      console.log(res.data);
-    };
 
+  const [novels, setNovels] = useState([]);
+  const [loadingNovels, setLoadingNovels] = useState(false);
+  const fetchData = async () => {
+    let res = await axios.get("/api/test");
+    console.log(res.data);
+  };
+  const fetchNovels = async () => {
+    setLoadingNovels(true);
+    const res = await axios.get('/api/novels');
+    setLoadingNovels(false);
+    console.log(res.data);
+    setNovels(res.data.novels);
+  }
+  useEffect(() => {
+    fetchNovels();
     fetchData();
   }, []);
 
   const uploadFile = async () => {
     if (file) {
       const formData = new FormData();
-      formData.append("file", file, name + '.txt');
+      const fileName = name.replaceAll(' ', '-');
+      formData.append("file", file, fileName + '.txt');
       setLoading(true);
       setSuccess(false);
       setError(false);
       try {
-        const res = await axios.post("/api/upload", formData, {
+        await axios.post("/api/upload", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setSuccess(true);
-        console.log(res.data);
         setLoading(false);
+        fetchNovels();
       } catch (error) {
         setLoading(false);
         setError(true);
-        console.log(error);
       }
     }
   };
@@ -92,7 +102,7 @@ const Landing = (props) => {
 
       </div>
       <div>
-        <Novels history={props.history}></Novels>
+        <Novels history={props.history} novels={novels} loading={loadingNovels}></Novels>
       </div>
 
     </Fragment>
