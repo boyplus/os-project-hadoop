@@ -313,7 +313,6 @@
     alias hadoop_clear="sudo ~/hadoop/hadoop-3.1.4/bin/hdfs namenode -format"
     alias hadoop_logs="cd ~/hadoop/hadoop-3.1.4/logs"
     alias hadoop_setting="cd ~/hadoop/hadoop-3.1.4/etc/hadoop"
-    export HADOOP_HOME="~/hadoop/hadoop-3.1.4"
     ```
 
     activate the .bashrc file
