@@ -6,6 +6,14 @@ const NovelPage = (props) => {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const deleteNovel = async () => {
+    try {
+      const res = await axios.delete('/api/novel', { params: { name } });
+      console.log(res.data);
+    } catch (err) {
+
+    }
+  }
   const fetchData = async (name) => {
     setLoading(true);
     try {
@@ -29,7 +37,6 @@ const NovelPage = (props) => {
       return <table className="ui celled table">
         <thead>
           <tr><th>Word</th><th>Count</th></tr>
-
         </thead>
         <tbody>
           {data.wordcount.map((el) => {
@@ -42,13 +49,14 @@ const NovelPage = (props) => {
 
   return <Fragment>
     <div style={{ paddingTop: '50px' }}>
-      <i class="angle left icon" onClick={() => props.history.push('/')} style={{ fontSize: '20px', cursor: 'pointer' }}></i>
+      <i className="angle left icon" onClick={() => props.history.push('/')} style={{ fontSize: '20px', cursor: 'pointer' }}></i>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
           <h1>Novel name: {name}</h1>
         </div>
         <button
           className="ui red button"
+          onClick={deleteNovel}
         >
           Delete
         </button>

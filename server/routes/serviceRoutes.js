@@ -185,4 +185,9 @@ module.exports = (app) => {
       res.status(500).send({ message: "error", error: err });
     }
   });
+
+  app.delete('/api/novel', async (req, res) => {
+    console.log(req.query);
+    res.send({ success: true });
+  });
 };
