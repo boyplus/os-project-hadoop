@@ -53,6 +53,8 @@ const Landing = (props) => {
   const fileChange = (e) => {
     setFile(e.target.files[0]);
   };
+
+
   return (
     <Fragment>
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', paddingTop: '50px' }}>
@@ -90,8 +92,6 @@ const Landing = (props) => {
                 {loading ? "Uploading..." : "Upload"}
               </button>
             </div>
-
-
           </div>
         </div>
         <div style={{ paddingTop: '5px' }}>

@@ -11,7 +11,6 @@ const NovelPage = (props) => {
     try {
       setError(false);
       const res = await axios.get('/api/novel', { params: { name } });
-      console.log(res.data)
       setData(res.data);
       setLoading(false);
     } catch (err) {
@@ -20,24 +19,43 @@ const NovelPage = (props) => {
   }
   useEffect(() => {
     const name = props.match.params.name;
-    console.log(name);
     setName(name);
-
     fetchData(name);
   }, []);
 
+  const renderPage = () => {
+    if (loading) return <div>Fetching Novel analysis from hadoop system...</div>
+    if (data) {
+      return <table className="ui celled table">
+        <thead>
+          <tr><th>Word</th><th>Count</th></tr>
+
+        </thead>
+        <tbody>
+          {data.wordcount.map((el) => {
+            return <tr><td data-label="Word">{el.word}</td><td data-label="Count">{el.count}</td></tr>
+          })}
+        </tbody>
+      </table>
+    }
+  }
+
   return <Fragment>
     <div style={{ paddingTop: '50px' }}>
-      <h1>Novel name: {name}</h1>
-      {loading ? <div>Fetching Novel analysis from hadoop system...</div> : null}
+      <i class="angle left icon" onClick={() => props.history.push('/')} style={{ fontSize: '20px', cursor: 'pointer' }}></i>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <h1>Novel name: {name}</h1>
+        </div>
+        <button
+          className="ui red button"
+        >
+          Delete
+        </button>
+      </div>
+
+      {renderPage()}
       {error ? <div style={{ color: 'red' }}>Fetch data from hadoop fail, please try again later</div> : null}
-      {data ? <div>
-        {data.wordcount.map(el => {
-          return <div key={el.word}>
-            <p>{el.word}: {el.count}</p>
-          </div>
-        })}
-      </div> : null}
     </div>
   </Fragment>
 }
