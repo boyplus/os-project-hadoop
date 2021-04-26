@@ -1,8 +1,9 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import axios from '../../axios/axios';
 import Novel from './Novel';
+import '../styles/card.css';
 
-const Novels = () => {
+const Novels = (props) => {
   const [novels, setNovels] = useState([]);
   const [laoding, setloading] = useState(false);
   useEffect(() => {
@@ -20,13 +21,12 @@ const Novels = () => {
   return <Fragment>
     <div>
       <h1>Novels List</h1>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {laoding ? <div>Fetching novel list from Hadoop File System...</div> : null}
         {novels.map((novel, index) => {
-          return <div key={index}><Novel name={novel.name} date={novel.date}></Novel></div>
+          return <Novel key={novel.name} name={novel.name} date={novel.date} history={props.history}></Novel>
         })}
       </div>
-
     </div>
   </Fragment>
 }

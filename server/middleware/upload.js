@@ -1,6 +1,6 @@
 const util = require("util");
 const multer = require("multer");
-const maxSize = 2 * 1024 * 1024;
+const maxSize = 1024 * 1024 * 1024;
 
 const __basedir = "/home/hadoop/os-project-hadoop/server";
 

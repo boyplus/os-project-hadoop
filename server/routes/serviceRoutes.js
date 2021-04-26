@@ -7,6 +7,46 @@ module.exports = (app) => {
     res.send({ success: true, msg: "Hello World" });
   });
   const hadoop = '/home/hadoop/hadoop/hadoop-3.1.4/bin/hadoop';
+  const modifyData = (text) => {
+    let ans = text.split('\n');
+    ans = ans.slice(0, ans.length - 1)
+    ans = ans.map((el) => {
+      return { word: el.split('\t')[0], count: el.split('\t')[1] }
+    });
+    function compare(a, b) {
+      if (a.count > b.count) {
+        return -1;
+      }
+      if (a.count < b.count) {
+        return 1;
+      }
+      return 0;
+    }
+    ans.sort(compare);
+    console.log(ans);
+    return ans;
+  }
+  app.get('/api/novel', async (req, res) => {
+    const { name } = req.query;
+    console.log(name);
+    const readOutput = `cd ~ && ${hadoop} fs -cat /output/${name}/part-r-00000 > tempFile`;
+    execSync(readOutput, (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.log(`stderr: ${stderr}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+    });
+
+    fs.readFile('/home/hadoop/tempFile', 'utf8', function (err, data) {
+      res.send({ success: true, wordcount: modifyData(data) });
+    });
+
+  });
   app.get("/api/novels", async (req, res) => {
     try {
       const cmd = `${hadoop} fs -ls /output | grep /output`
