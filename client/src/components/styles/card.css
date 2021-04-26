@@ -1,0 +1,19 @@
+.card{
+  min-width: 200px;
+  background-color: #d9e4f5;
+  background-image: linear-gradient(315deg, #d9e4f5 0%, #f5e3e6 74%);
+  opacity: 1;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  border-radius: 5px 5px;
+  padding: 10px;
+  
+  margin-right: 40px;
+  
+}
+.card:hover{
+  cursor: pointer;
+  opacity: 0.9;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+}

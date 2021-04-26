@@ -1,13 +1,25 @@
 const uploadFile = require("../middleware/upload");
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 
 module.exports = (app) => {
   app.get("/api/test", async (req, res) => {
-    console.log("hello");
     res.send({ success: true, msg: "Hello World" });
   });
 
-  app.get("/api/novels", async (req, res) => {});
+  app.get("/api/novels", async (req, res) => {
+    try {
+      console.log('novels');
+      const cmd = `/home/hadoop/hadoop/hadoop-3.1.4/bin/hadoop fs -ls /output | grep /output`
+      // const cmd = 'ls';
+      exec(cmd, (error, stdout, stderr) => {
+        console.log('inside');
+        console.log(stdout);
+        res.send({ msg: 'balo' });
+      });
+    } catch (err) {
+      res.status(500).send({ message: "error", error: err });
+    }
+  });
 
   app.post("/api/upload", async (req, res) => {
     try {
@@ -18,7 +30,7 @@ module.exports = (app) => {
       }
       const name = req.file.originalname;
 
-      const str = `cp /Users/boyplus/Desktop/MyGit/os-project-hadoop/server/resources/input/${name} ~/Desktop`;
+      const str = `cp /home/hadoop/os-project-hadoop/server/resources/input/${name} ~/Desktop`;
       execSync(str, (error, stdout, stderr) => {
         if (error) {
           console.log(`error: ${error.message}`);
