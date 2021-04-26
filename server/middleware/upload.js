@@ -3,13 +3,12 @@ const multer = require("multer");
 const maxSize = 2 * 1024 * 1024;
 
 const __basedir = "/Users/boyplus/Desktop/MyGit/os-project-hadoop/server";
+// const __basedir = "/home/hadoop/";
 let storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, __basedir + "/resources/static/assets/uploads/");
+    cb(null, __basedir + "/resources/input/");
   },
   filename: (req, file, cb) => {
-    console.log("eiei");
-    console.log(file.originalname);
     cb(null, file.originalname);
   },
 });

@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../axios/axios";
 
 const App = () => {
   const [file, setFile] = useState(null);
@@ -36,7 +36,7 @@ const App = () => {
   };
   return (
     <Fragment>
-      <h1>Hadoop Word Count Application</h1>
+      <h1>Novels Analysis by Hadoop System</h1>
       <button
         onClick={() => document.getElementById("file").click()}
         className="ui primary button"

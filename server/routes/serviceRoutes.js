@@ -7,6 +7,8 @@ module.exports = (app) => {
     res.send({ success: true, msg: "Hello World" });
   });
 
+  app.get("/api/novels", async (req, res) => {});
+
   app.post("/api/upload", async (req, res) => {
     try {
       await uploadFile(req, res);
@@ -14,8 +16,22 @@ module.exports = (app) => {
       if (req.file == undefined) {
         return res.status(400).send({ message: "Please upload a file!" });
       }
+      const name = req.file.originalname;
 
-      exec("ls -la", (error, stdout, stderr) => {
+      const str = `cp /Users/boyplus/Desktop/MyGit/os-project-hadoop/server/resources/input/${name} ~/Desktop`;
+      execSync(str, (error, stdout, stderr) => {
+        if (error) {
+          console.log(`error: ${error.message}`);
+          return;
+        }
+        if (stderr) {
+          console.log(`stderr: ${stderr}`);
+          return;
+        }
+        console.log(`stdout: ${stdout}`);
+      });
+      const copy = `hadoop hdfs put ${name} /input`;
+      execSync(copy, (error, stdout, stderr) => {
         if (error) {
           console.log(`error: ${error.message}`);
           return;
