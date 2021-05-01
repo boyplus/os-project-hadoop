@@ -127,7 +127,7 @@
 
     After you see the content of file, make sure that you copy the content of this file.
 
-14. Copy master node’s public key into authorized_keys file of every node. (All nodes)
+14. Paste master node’s public key into authorized_keys file of every node. (All nodes)
 
     ```shell
     vi ~/.ssh/authorized_keys
@@ -487,7 +487,7 @@
 
    ```shell
    hadoop fs -ls /output
-   hadoop fs -cat /output/<file that you see from previous command>
+   hadoop fs -cat /output/part-r-00000
    ```
 
    The output is a mapping between word and count of that word
@@ -504,24 +504,24 @@ hadoop_logs
 
 ### Data Node is not starting
 
-1. Stop hadoop and format name node
+1. Stop hadoop and format name node on master node
 
    ```shell
    hadoop_stop
    hadoop_clear
    ```
 
-2. Delete dfs folder
+2. Delete dfs folder on all nodes
 
    ```shell
    cd /tmp/hadoop-hadoop
    rm -rf dfs
    ```
 
-3. Start hadoop
+3. Start hadoop on master node
 
    ```shell
    hadoop_start
    ```
 
-> Now when 
+> Now when you run jps command, you will see data node is running
